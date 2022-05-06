@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "projects": {
+    "api": "apps/api",
+    "api-interfaces": "libs/api-interfaces",
+    "wordle": "apps/wordle",
+    "wordle-e2e": "apps/wordle-e2e"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "sourceRoot": "apps/wordle-e2e/src",
+  "projectType": "application",
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/wordle-e2e/cypress.json",
+        "devServerTarget": "wordle:serve:development"
+      },
+      "configurations": {
+        "production": {
+          "devServerTarget": "wordle:serve:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/wordle-e2e/**/*.{js,ts}"]
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": ["wordle"]
+}
