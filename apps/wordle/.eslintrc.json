@@ -24,7 +24,8 @@
             "prefix": "wordle-workspace",
             "style": "kebab-case"
           }
-        ]
+        ],
+        "@angular-eslint/no-empty-lifecycle-method":"off"
       }
     },
     {

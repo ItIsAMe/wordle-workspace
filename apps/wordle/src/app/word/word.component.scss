@@ -1,0 +1,4 @@
+:host::after {
+    content: "\a";
+    white-space: pre;
+}
