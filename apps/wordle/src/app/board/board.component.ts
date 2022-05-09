@@ -1,6 +1,7 @@
-import { CurrentWordService } from '../word.service';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import { WordCheckDto } from './../../../../../libs/api-interfaces/src/lib/word.dto';
 import { WordComponent } from './../word/word.component';
-import { AfterViewInit, Component, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, QueryList, ViewChildren } from '@angular/core';
 import { CheckService } from '../check.service';
 
 @Component({
@@ -8,30 +9,29 @@ import { CheckService } from '../check.service';
   templateUrl:'./board.component.html',
   styleUrls: ['./board.component.scss']
 })
-export class BoardComponent implements AfterViewInit{
+export class BoardComponent{
   currentInd = 0;
 
-  constructor(private checkService: CheckService, private currentWordService: CurrentWordService) {}
+  constructor(private checkService: CheckService) {}
   
   @ViewChildren('word') components?: QueryList<WordComponent>;
-
-  ngAfterViewInit(){
-    console.log(this.components);
-  }
 
   test() {
     if (typeof this.components ==='undefined') {
       return;
     }
     else {
-      const wordGuess = this.components.toArray()[this.currentInd].chars;
-      if (!this.currentWordService.isValid(wordGuess)){
+      const component = this.components.toArray()[this.currentInd];
+      const wordGuess = component.chars;
+      if (!this.checkService.isValid(wordGuess)){
         console.log("not valid");
         return;
       }
       console.log(wordGuess);
-      this.checkService.checkWord(wordGuess.toString()).subscribe((str) => {
-        console.log(str);
+      const wordCheckDto = new WordCheckDto(wordGuess);
+      this.checkService.checkWord(wordCheckDto).subscribe((result) => {
+        console.log(result);
+        component.updateStyle(result.results);
         this.currentInd++;
       });
       //if all letters entered
