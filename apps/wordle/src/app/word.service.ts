@@ -1,5 +1,5 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
-import { WordCheckDto } from './../../../../libs/api-interfaces/src/lib/word.dto';
+import { WordCheckDto } from '../../../../libs/api-interfaces/src/lib/word.dto';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -8,7 +8,7 @@ import { WordResult } from '../../../../libs/api-interfaces/src/lib/WordResult';
 @Injectable({
     providedIn: 'root'
 })
-export class CheckService {
+export class WordService {
     httpOptions = {
         headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
@@ -19,6 +19,10 @@ export class CheckService {
         return this.http.put<WordResult>(this.url, wordGuess, this.httpOptions);
     }
 
+    newGame() {
+        return this.http.put('api/newgame','', this.httpOptions);
+    }
+    
     isValid(chars: string[]): boolean {
         for(let i = 0; i < chars.length; i ++) {
             if (chars[i].length != 1) {

@@ -1,8 +1,9 @@
+
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { WordCheckDto } from './../../../../../libs/api-interfaces/src/lib/word.dto';
 import { WordComponent } from './../word/word.component';
 import { Component, QueryList, ViewChildren } from '@angular/core';
-import { CheckService } from '../check.service';
+import { WordService } from '../word.service';
 
 @Component({
   selector: 'wordle-workspace-board',
@@ -12,7 +13,7 @@ import { CheckService } from '../check.service';
 export class BoardComponent{
   currentInd = 0;
 
-  constructor(private checkService: CheckService) {}
+  constructor(private wordService: WordService) {}
   
   @ViewChildren('word') components?: QueryList<WordComponent>;
 
@@ -23,21 +24,32 @@ export class BoardComponent{
     else {
       const component = this.components.toArray()[this.currentInd];
       const wordGuess = component.chars;
-      if (!this.checkService.isValid(wordGuess)){
+      if (!this.wordService.isValid(wordGuess)){
         console.log("not valid");
         return;
       }
       console.log(wordGuess);
       const wordCheckDto = new WordCheckDto(wordGuess);
-      this.checkService.checkWord(wordCheckDto).subscribe((result) => {
+      this.wordService.checkWord(wordCheckDto).subscribe((result) => {
         console.log(result);
-        component.updateStyle(result.results);
-        this.currentInd++;
+        if (result.valid){
+          component.updateStyle(result.results);
+          this.currentInd++;
+        }
+        else {
+          console.log("not valid word");
+        }
       });
       //if all letters entered
         //service call to api
         //if not valid word from api give meesage
         //else valid return result and incr currentInd
     }
+  }
+
+  playAgain() {
+    //clear components
+    //
+    this.wordService.newGame();
   }
 }

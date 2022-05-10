@@ -1,17 +1,44 @@
+import { Word } from './word.entity';
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { Injectable } from '@nestjs/common';
 import { Correctness, WordResult } from 'libs/api-interfaces/src/lib/WordResult';
 import { WordCheckDto } from 'libs/api-interfaces/src/lib/word.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { SelectedWord } from './selected-word.entity';
 
 @Injectable()
 export class WordService {
 
-    checkWord(word: WordCheckDto): WordResult {
-        // get word of the day
-        //compareTo given word
-        // return resulting 
-        return this.getResult(word.chars, "there")
-         
+    constructor(
+        @InjectRepository(Word)
+        private wordRepository: Repository<Word>,
+        @InjectRepository(SelectedWord)
+        private selectedWordRepository: Repository<SelectedWord>,
+    )   
+    {}
+
+    async checkWord(wordInputted: WordCheckDto): Promise<WordResult> {
+        const wordFound = await Word.findOne({
+            where: {
+                str:`${wordInputted.chars.join("")}`,
+            }
+        })
+
+        if (wordFound !== null) {
+            const realWord = await SelectedWord.findOne({
+                where: {
+                    id: 1,
+                },
+                relations: ['word'],
+                
+            });
+            console.log(realWord.word.str);
+            return this.getResult(wordInputted.chars, realWord.word.str);
+        }
+        else {
+            return new WordResult([Correctness.Correct], false);
+        }
     }
 
     getResult(chars: string[], realWord: string): WordResult {
@@ -58,6 +85,14 @@ export class WordService {
                 }
             }
         }
-        return new WordResult(correctnessArr);
+        return new WordResult(correctnessArr, true);
+    }
+
+    async makeNewSelectedWord() {
+        const randId = Math.floor(Math.random() * 5757);
+        await this.selectedWordRepository.save({
+            id:1,
+            wordId: randId,
+        })
     }
 }

@@ -1,8 +1,9 @@
 export class WordResult {
     results: Correctness[];
-
-    constructor(arr: Correctness[]) {
+    valid: boolean;
+    constructor(arr: Correctness[], valid: boolean) {
         this.results = arr;
+        this.valid = valid;
     }
 }
 

@@ -1,3 +1,4 @@
+import { WordService } from './word.service';
 import { BoardComponent } from './board/board.component';
 import { WordComponent } from './word/word.component';
 import { NgModule } from '@angular/core';
@@ -18,7 +19,7 @@ import { FormsModule } from '@angular/forms';
     BrowserModule,
     HttpClientModule,
   ],
-  providers: [],
+  providers: [WordService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
