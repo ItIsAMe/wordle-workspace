@@ -7,12 +7,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { KeyboardComponent } from './keyboard/keyboard.component';
 
 @NgModule({
   declarations: [
     AppComponent, 
     WordComponent,
-    BoardComponent],
+    BoardComponent,
+    KeyboardComponent],
 
   imports: [
     FormsModule,

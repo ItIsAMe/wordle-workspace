@@ -1,7 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { WordCheckDto } from './../../../../../libs/api-interfaces/src/lib/word.dto';
 import { WordComponent } from './../word/word.component';
-import { Component, QueryList, ViewChildren } from '@angular/core';
+import { Component, HostListener, QueryList, ViewChildren } from '@angular/core';
 import { WordService } from '../word.service';
 import { Correctness, WordResult } from 'libs/api-interfaces/src/lib/WordResult';
 
@@ -14,6 +14,7 @@ export class BoardComponent{
   currentInd = 0;
   inProgress = true;
   won = false;
+  endMessage = "";
   constructor(private wordService: WordService) {}
   
   @ViewChildren('word') components?: QueryList<WordComponent>;
@@ -51,11 +52,17 @@ export class BoardComponent{
         this.won = false;
       }
     }
-    if (this.currentInd > 5 || this.won) {
+    if (this.won) {
       this.currentInd = 6;
       this.inProgress = false;
+      this.endMessage = "You got the wordle";
+    }else if (this.currentInd > 5) {
+      this.currentInd = 6;
+      this.inProgress = false;
+      this.endMessage = "Better luck next time";
     }
   }
+
   newWord() {
     if (typeof this.components ==='undefined') {
       return;
@@ -68,7 +75,17 @@ export class BoardComponent{
       }
     }
     this.currentInd = 0;
-    this.wordService.newGame().subscribe();
+    this.wordService.newGame().subscribe(()=>{
+
     this.inProgress = true;
+    });
   }
+
+  @HostListener('document:keypress', ['$event'])
+  potentiallyCheck(event: KeyboardEvent) {
+    if (event.code ==="Enter" && this.inProgress) {
+      this.check();
+    }
+  }
+
 }

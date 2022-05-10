@@ -1,7 +1,7 @@
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { Correctness } from './../../../../../libs/api-interfaces/src/lib/WordResult';
 
-import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, HostListener, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 
 @Component({
   selector: 'wordle-workspace-word',
@@ -9,7 +9,7 @@ import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core
   styleUrls: ['./word.component.scss']
 })
 export class WordComponent{
-
+    charsInd = -1;
     chars= ['', '', '', '', ''];
     correctness = ['','','','',''];
     @Input() current = false;
@@ -32,20 +32,21 @@ export class WordComponent{
     clear() {
       this.updateStyle([Correctness.Wrong, Correctness.Wrong, Correctness.Wrong, Correctness.Wrong, Correctness.Wrong]);
       this.chars= ['', '', '', '', ''];
+      this.charsInd = -1;
     }
 
-    onInput(event: any) {
-      let element;
-      if (event.code === 'Backspace')
-        element = event.srcElement.previousElementSibling;
-      else if ((<string>event.code).includes("Key"))
-        element = event.srcElement.nextElementSibling;
-
-      if (element == null) {
+    @HostListener('document:keydown', ['$event'])
+    onInput(event: KeyboardEvent) {
+      if (!this.current|| event.target && (<HTMLInputElement>event.target).nodeName === "BUTTON") {
         return;
       }
-      else {
-        element.focus();
+      if (event.code === 'Backspace' && this.charsInd >= 0){
+        this.chars[this.charsInd] = "";
+        this.charsInd--;
+      }
+      else if ((<string>event.code).includes("Key") && this.charsInd < 4) {
+        this.charsInd++;
+        this.chars[this.charsInd] = (<string>event.code).charAt(3);
       }
     }
 }

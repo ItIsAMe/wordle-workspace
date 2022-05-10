@@ -34,14 +34,14 @@ export class WordService {
                 
             });
             console.log(realWord.word.str);
-            return this.getResult(wordInputted.chars, realWord.word.str);
+            return this.getResult(wordInputted.chars.join("").toLowerCase(), realWord.word.str);
         }
         else {
             return new WordResult([Correctness.Correct], false);
         }
     }
 
-    getResult(chars: string[], realWord: string): WordResult {
+    getResult(chars: string, realWord: string): WordResult {
         const mapLetters = new Map<string, number> ();
         for(let i = 0; i < realWord.length; i++) {
             const freq = mapLetters.get(realWord.charAt(i));
@@ -80,7 +80,7 @@ export class WordService {
                     correctnessArr[k] = Correctness.Wrong;
                 }
                 else {
-                    mapLetters.set(chars[k], freq);
+                    mapLetters.set(chars[k], freq-1);
                     correctnessArr[k] = Correctness.Partial;
                 }
             }
