@@ -19,8 +19,8 @@ export class WordService {
         return this.http.put<WordResult>(this.url, wordGuess, this.httpOptions);
     }
 
-    newGame() {
-        return this.http.put('api/newgame','', this.httpOptions);
+    newGame(): Observable<boolean>{
+        return this.http.put<boolean>('api/newgame','', this.httpOptions);
     }
     
     isValid(chars: string[]): boolean {

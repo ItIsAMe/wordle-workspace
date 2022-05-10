@@ -1,8 +1,11 @@
+<h2 [hidden]="inProgress">Win: {{won}}</h2>
 <wordle-workspace-word #word [current]='currentInd===0'></wordle-workspace-word>
 <wordle-workspace-word #word [current]='currentInd===1'></wordle-workspace-word>
 <wordle-workspace-word #word [current]='currentInd===2'></wordle-workspace-word>
 <wordle-workspace-word #word [current]='currentInd===3'></wordle-workspace-word>
 <wordle-workspace-word #word [current]='currentInd===4'></wordle-workspace-word>
 <wordle-workspace-word #word [current]='currentInd===5'></wordle-workspace-word>
-<button (click) = "test()">Check</button>
-<button (click) = "playAgain()">Play again</button>
+<div>   
+    <button (click) = "check()" [disabled] ="!inProgress" >Check</button>
+    <button (click) = "newWord()">New Word</button>
+</div>

@@ -1,9 +1,9 @@
-
-// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { WordCheckDto } from './../../../../../libs/api-interfaces/src/lib/word.dto';
 import { WordComponent } from './../word/word.component';
 import { Component, QueryList, ViewChildren } from '@angular/core';
 import { WordService } from '../word.service';
+import { Correctness, WordResult } from 'libs/api-interfaces/src/lib/WordResult';
 
 @Component({
   selector: 'wordle-workspace-board',
@@ -12,12 +12,13 @@ import { WordService } from '../word.service';
 })
 export class BoardComponent{
   currentInd = 0;
-
+  inProgress = true;
+  won = false;
   constructor(private wordService: WordService) {}
   
   @ViewChildren('word') components?: QueryList<WordComponent>;
 
-  test() {
+  check() {
     if (typeof this.components ==='undefined') {
       return;
     }
@@ -28,28 +29,46 @@ export class BoardComponent{
         console.log("not valid");
         return;
       }
-      console.log(wordGuess);
       const wordCheckDto = new WordCheckDto(wordGuess);
       this.wordService.checkWord(wordCheckDto).subscribe((result) => {
         console.log(result);
         if (result.valid){
           component.updateStyle(result.results);
           this.currentInd++;
+          this.checkWin(result);
         }
         else {
           console.log("not valid word");
         }
       });
-      //if all letters entered
-        //service call to api
-        //if not valid word from api give meesage
-        //else valid return result and incr currentInd
     }
   }
+  
+  checkWin(result: WordResult) {
+    this.won = true;
+    for(let i = 0; i < result.results.length; i++) {
+      if (result.results[i] != Correctness.Correct) {
+        this.won = false;
+      }
+    }
+    if (this.currentInd > 5 || this.won) {
+      this.currentInd = 6;
+      this.inProgress = false;
+    }
+  }
+  newWord() {
+    if (typeof this.components ==='undefined') {
+      return;
+    }
+    else {
 
-  playAgain() {
-    //clear components
-    //
-    this.wordService.newGame();
+      const components = this.components.toArray();
+      for(let i = 0; i< components.length; i++) {
+        components[i].clear();
+      }
+    }
+    this.currentInd = 0;
+    this.wordService.newGame().subscribe();
+    this.inProgress = true;
   }
 }

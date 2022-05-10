@@ -9,8 +9,9 @@ import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core
   styleUrls: ['./word.component.scss']
 })
 export class WordComponent{
+
     chars= ['', '', '', '', ''];
-    correctness = ['','','','','']
+    correctness = ['','','','',''];
     @Input() current = false;
 
     updateStyle(correctness: Correctness[]) {
@@ -24,6 +25,27 @@ export class WordComponent{
         else {
           this.correctness[i] = '';
         }
+      }
+    }
+
+    // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
+    clear() {
+      this.updateStyle([Correctness.Wrong, Correctness.Wrong, Correctness.Wrong, Correctness.Wrong, Correctness.Wrong]);
+      this.chars= ['', '', '', '', ''];
+    }
+
+    onInput(event: any) {
+      let element;
+      if (event.code === 'Backspace')
+        element = event.srcElement.previousElementSibling;
+      else if ((<string>event.code).includes("Key"))
+        element = event.srcElement.nextElementSibling;
+
+      if (element == null) {
+        return;
+      }
+      else {
+        element.focus();
       }
     }
 }

@@ -2,7 +2,14 @@
     content: "\a";
     white-space: pre;
 }
-
+input {
+    text-align: center;
+    height: 50px;
+    width: 50px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    font-size: 30px,
+}
 .correct{
     background-color: green;
 }

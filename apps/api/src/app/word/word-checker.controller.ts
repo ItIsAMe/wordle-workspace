@@ -16,8 +16,9 @@ export class WordCheckerController {
          return await this.wordService.checkWord(body);
     }
 
-    @Post('newgame')
+    @Put('newgame')
     async newGame() {
         await this.wordService.makeNewSelectedWord();
+        return true;
     }
 }
