@@ -13,7 +13,6 @@ import Swal from 'sweetalert2';
 export class BoardComponent{
   currentInd = 0;
   inProgress = true;
-  won = false;
   endMessage = "";
   constructor(private wordService: WordService, private winService: WinService) {}
   
@@ -39,11 +38,11 @@ export class BoardComponent{
           const won = this.winService.checkWin(result);
           if (won) {
             this.endMessage = "You got the wordle";
-            this.setGameDoneState(this.won);
+            this.setGameDoneState();
           }
           else if (this.currentInd > 5) {
             this.endMessage = "Better luck next time";
-            this.setGameDoneState(this.won);
+            this.setGameDoneState();
           }
         }
         else {
@@ -82,12 +81,11 @@ export class BoardComponent{
       width: 300,
       title: 'Not a valid word',
       showConfirmButton: false,
-      timer: 1000,
-      
+      timer: 700,
     });
   }
 
-  private setGameDoneState(won: boolean) {
+  private setGameDoneState() {
     this.currentInd = 6;
     this.inProgress = false;
   }
