@@ -8,7 +8,7 @@ export class WordResult {
 }
 
 export enum Correctness {
-    Correct,
-    Wrong,
-    Partial
+    Correct = "correct",
+    Wrong = "none",
+    Partial = "partial",
 }
