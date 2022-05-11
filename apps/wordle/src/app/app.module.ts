@@ -1,3 +1,4 @@
+import { WinService } from './win.service';
 import { WordService } from './word.service';
 import { BoardComponent } from './board/board.component';
 import { WordComponent } from './word/word.component';
@@ -21,7 +22,7 @@ import { KeyboardComponent } from './keyboard/keyboard.component';
     BrowserModule,
     HttpClientModule,
   ],
-  providers: [WordService],
+  providers: [WordService, WinService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
