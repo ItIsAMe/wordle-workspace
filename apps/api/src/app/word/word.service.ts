@@ -18,27 +18,26 @@ export class WordService {
     )   
     {}
 
-    async checkWord(wordInputted: WordCheckDto): Promise<WordResult> {
+    async checkWord(wordInputted: WordCheckDto, userId: string): Promise<WordResult> {
         const wordFound = await Word.findOne({
             where: {
                 str:`${wordInputted.chars.join("")}`,
             }
         })
 
-        if (wordFound !== null) {
-            const realWord = await SelectedWord.findOne({
-                where: {
-                    id: 1,
-                },
-                relations: ['word'],
-                
-            });
-            console.log(realWord.word.str);
-            return this.getResult(wordInputted.chars.join("").toLowerCase(), realWord.word.str);
-        }
-        else {
+        if (wordFound === null) {
             return new WordResult([Correctness.Correct], false);
         }
+        
+        const realWord = await SelectedWord.findOne({
+            where: {
+                userId: userId, 
+            },
+            relations: ['word'],
+        });
+        console.log(realWord.word.str);
+
+        return this.getResult(wordInputted.chars.join("").toLowerCase(), realWord.word.str);
     }
 
     getResult(chars: string, realWord: string): WordResult {
@@ -88,11 +87,11 @@ export class WordService {
         return new WordResult(correctnessArr, true);
     }
 
-    async makeNewSelectedWord() {
+    async updateSelectedWord(userId: string) {
         const randId = Math.floor(Math.random() * 5757);
         await this.selectedWordRepository.save({
-            id:1,
-            wordId: randId,
-        })
+            userId: userId,
+            wordId:randId,
+        });
     }
 }

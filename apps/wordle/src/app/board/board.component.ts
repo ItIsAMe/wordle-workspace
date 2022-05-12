@@ -1,24 +1,38 @@
+import { IdService } from './../id.service';
 import { KeyboardComponent } from './../keyboard/keyboard.component';
 import { WinService } from './../win.service';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { WordCheckDto } from 'libs/api-interfaces/src/lib/word.dto';
 import { WordComponent } from './../word/word.component';
-import { Component, HostListener, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, HostListener, QueryList, ViewChild, ViewChildren, OnInit } from '@angular/core';
 import { WordService } from '../word.service';
 import Swal from 'sweetalert2';
+import{ CookieService } from 'ngx-cookie-service';
 @Component({
   selector: 'wordle-workspace-board',
   templateUrl:'./board.component.html',
   styleUrls: ['./board.component.scss']
 })
-export class BoardComponent{
+export class BoardComponent implements OnInit{
   currentInd = 0;
   inProgress = true;
   endMessage = "";
-  constructor(private wordService: WordService, private winService: WinService) {}
-  
+  private userId = "";
   @ViewChildren('word') components?: QueryList<WordComponent>;
   @ViewChild('keyboard') keyboard?: KeyboardComponent;
+
+  constructor(private wordService: WordService, private winService: WinService, private cookieService: CookieService, private idService: IdService) {}
+
+  ngOnInit() {
+    this.userId = this.cookieService.get('id');
+    if (!this.userId){
+      this.idService.createNewId().subscribe((id) => {
+        this.userId = id;
+        this.cookieService.set('id', id);
+      });
+    }
+  }
+  
   check() {
     if (typeof this.components ==='undefined') {
       return;

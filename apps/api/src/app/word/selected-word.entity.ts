@@ -4,8 +4,8 @@ import { Word } from "./word.entity";
 @Entity()
 export class SelectedWord extends BaseEntity {
 
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    userId: string;
     
     @Column({
     })

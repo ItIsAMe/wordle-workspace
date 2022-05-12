@@ -1,7 +1,7 @@
 /* eslint-disable @nrwl/nx/enforce-module-boundaries */
 import { WordService } from './word.service';
 import { WordCheckDto } from '../../../../../libs/api-interfaces/src/lib/word.dto';
-import { Body, Controller, Post, Put } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { WordResult } from 'libs/api-interfaces/src/lib/WordResult';
 
 @Controller()
@@ -11,14 +11,14 @@ export class WordCheckerController {
 
     }
 
-    @Put('check')  //api/check put
-    async checkWord(@Body() body: WordCheckDto): Promise<WordResult> {
-         return await this.wordService.checkWord(body);
+    @Put('check/:id')  //api/check put
+    async checkWord(@Param('id') userId: string, @Body() body: WordCheckDto): Promise<WordResult> {
+         return await this.wordService.checkWord(body, userId);
     }
 
-    @Put('newgame')
-    async newGame() {
-        await this.wordService.makeNewSelectedWord();
+    @Put('newgame/:id')
+    async newGame(@Param('id') userId: string, @Body() body: string) {
+        await this.wordService.updateSelectedWord(userId);
         return true;
     }
 }

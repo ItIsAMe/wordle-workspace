@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { Correctness, WordResult } from "libs/api-interfaces/src/lib/WordResult";
 
 @Injectable({

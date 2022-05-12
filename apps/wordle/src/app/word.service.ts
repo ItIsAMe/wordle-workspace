@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { WordResult } from '../../../../libs/api-interfaces/src/lib/WordResult';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
     providedIn: 'root'
@@ -12,15 +13,14 @@ export class WordService {
     httpOptions = {
         headers: new HttpHeaders({'Content-Type': 'application/json'})
     };
-    url = 'api/check'
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient, private cookieService: CookieService) {}
 
     checkWord(wordGuess: WordCheckDto): Observable<WordResult> {
-        return this.http.put<WordResult>(this.url, wordGuess, this.httpOptions);
+        return this.http.put<WordResult>(`api/check/${this.cookieService.get('id')}`, wordGuess, this.httpOptions);
     }
 
     newGame(): Observable<boolean>{
-        return this.http.put<boolean>('api/newgame','', this.httpOptions);
+        return this.http.put<boolean>(`api/newgame/${this.cookieService.get('id')}`,'', this.httpOptions);
     }
     
     isValid(chars: string[]): boolean {
