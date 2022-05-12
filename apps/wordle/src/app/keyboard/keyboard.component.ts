@@ -1,14 +1,21 @@
+import { CookieService } from 'ngx-cookie-service';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { Correctness } from 'libs/api-interfaces/src/lib/WordResult';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: "wordle-workspace-keyboard",
     templateUrl: './keyboard.component.html',
     styleUrls: ['./keyboard.component.scss']
 })
-export class KeyboardComponent {
+export class KeyboardComponent implements OnInit{
     styles = Array(26).fill("");
+
+    constructor(private cookieService: CookieService) {}
+
+    ngOnInit(): void {
+        this.getCookieData();
+    }
 
     keyPress(str: string) {
         document.dispatchEvent(new KeyboardEvent('keydown', {
@@ -57,9 +64,22 @@ export class KeyboardComponent {
                     this.styles[charInd] = classStyle.toString();
             }
         }
+
+        this.setCookieData();
     }
 
     clear() {
         this.styles = Array(26).fill("");
+        this.setCookieData();
+    }
+
+    private getCookieData() {
+        if (this.cookieService.check('keyboardStyles')){
+            this.styles = JSON.parse(this.cookieService.get('keyboardStyles'));
+        }
+    }
+
+    private setCookieData() {
+        this.cookieService.set('keyboardStyles', JSON.stringify(this.styles));
     }
 }

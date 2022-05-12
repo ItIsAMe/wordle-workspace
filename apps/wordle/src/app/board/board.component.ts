@@ -24,13 +24,7 @@ export class BoardComponent implements OnInit{
   constructor(private wordService: WordService, private winService: WinService, private cookieService: CookieService, private idService: IdService) {}
 
   ngOnInit() {
-    this.userId = this.cookieService.get('id');
-    if (!this.userId){
-      this.idService.createNewId().subscribe((id) => {
-        this.userId = id;
-        this.cookieService.set('id', id);
-      });
-    }
+    this.loadCookieData();
   }
   
   check() {
@@ -44,10 +38,10 @@ export class BoardComponent implements OnInit{
         this.invalidWordPopup();
         return;
       }
+      
       const wordCheckDto = new WordCheckDto(wordGuess);
       this.wordService.checkWord(wordCheckDto).subscribe((result) => {
         if (result.valid){
-
           component.updateStyle(result.results);
           if (this.keyboard)
             this.keyboard.updateStyle(result.results, wordGuess);
@@ -62,6 +56,7 @@ export class BoardComponent implements OnInit{
             this.endMessage = "Better luck next time";
             this.setGameDoneState();
           }
+          this.setCookieData();
         }
         else {
           this.invalidWordPopup();
@@ -87,6 +82,7 @@ export class BoardComponent implements OnInit{
     
     this.wordService.newGame().subscribe(()=>{
       this.setGameStartState();
+      this.setCookieData();
     });
   }
 
@@ -115,5 +111,22 @@ export class BoardComponent implements OnInit{
   private setGameStartState() {
     this.currentInd = 0;
     this.inProgress = true;
+  }
+
+  private loadCookieData() {
+    if (!this.cookieService.check('id')){
+      this.idService.createNewId().subscribe((id) => {
+        this.userId = id;
+        this.cookieService.set('id', id);
+      });
+    }
+    this.userId = this.cookieService.get('id');
+    this.currentInd = (this.cookieService.check('currentInd'))? +this.cookieService.get('currentInd'): 0;
+    this.inProgress = (this.cookieService.check('inProgress'))? this.cookieService.get('inProgress')==="true": true;
+  }
+
+  private setCookieData() {
+    this.cookieService.set('currentInd', this.currentInd.toString());
+    this.cookieService.set('inProgress', this.inProgress.toString());
   }
 }
