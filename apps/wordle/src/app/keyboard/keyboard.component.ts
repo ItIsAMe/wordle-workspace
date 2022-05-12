@@ -17,6 +17,12 @@ export class KeyboardComponent implements OnInit{
         this.getCookieData();
     }
 
+    /**
+     * Dispatches a keydown event with the specified letter
+     * determined by the button clicked.
+     * 
+     * @param str, the letter that needs to have a keydown dispatched
+     */
     keyPress(str: string) {
         document.dispatchEvent(new KeyboardEvent('keydown', {
             key: str,
@@ -27,6 +33,9 @@ export class KeyboardComponent implements OnInit{
         }));
     }
 
+    /**
+     * Dispatches an Enter keydown event.
+     */
     enterPress() {
         document.dispatchEvent(new KeyboardEvent('keypress', {
             key: "Enter",
@@ -37,6 +46,9 @@ export class KeyboardComponent implements OnInit{
         }));
     }
 
+    /**
+     * Dispatches a backspace keydown event.
+     */
     backspace() {
         document.dispatchEvent(new KeyboardEvent('keydown', {
             key: "Backspace",
@@ -47,6 +59,13 @@ export class KeyboardComponent implements OnInit{
         }));
     }
 
+    /**
+     * Updates the keyboard style based on the letter key used and its associated
+     * correctness.
+     * 
+     * @param result, array of correctness
+     * @param wordGuess, array of letters inputted
+     */
     updateStyle(result: Correctness[], wordGuess: string[]) {
         for (let i = 0; i < result.length; i++) {
             const charInd = wordGuess[i].charCodeAt(0) - "A".charCodeAt(0);
@@ -64,21 +83,29 @@ export class KeyboardComponent implements OnInit{
                     this.styles[charInd] = classStyle.toString();
             }
         }
-
         this.setCookieData();
     }
 
+    /**
+     * Clears style of the keyboard.
+     */
     clear() {
         this.styles = Array(26).fill("");
         this.setCookieData();
     }
 
+    /**
+     * Gets keyboard data from the browser cookies.
+     */
     private getCookieData() {
         if (this.cookieService.check('keyboardStyles')){
             this.styles = JSON.parse(this.cookieService.get('keyboardStyles'));
         }
     }
 
+    /**
+     * Sets keyboard data from the browser cookies.
+     */
     private setCookieData() {
         this.cookieService.set('keyboardStyles', JSON.stringify(this.styles));
     }

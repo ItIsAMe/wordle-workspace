@@ -11,13 +11,27 @@ export class WordCheckerController {
 
     }
 
+    /**
+     * Checks the correctness of a inputted word, against the 
+     * users specific real word.
+     * 
+     * @param userId, user asking for the word check.
+     * @param body, WordCheckDto that contains the letters of the inputted word.
+     * @returns 
+     */
     @Put('check/:id')  //api/check put
     async checkWord(@Param('id') userId: string, @Body() body: WordCheckDto): Promise<WordResult> {
          return await this.wordService.checkWord(body, userId);
     }
 
+    /**
+     * Updates a user specific real word to a random new one.
+     * 
+     * @param userId, the user asking for the new game
+     * @returns 
+     */
     @Put('newgame/:id')
-    async newGame(@Param('id') userId: string, @Body() body: string) {
+    async newGame(@Param('id') userId: string) {
         await this.wordService.updateSelectedWord(userId);
         return true;
     }

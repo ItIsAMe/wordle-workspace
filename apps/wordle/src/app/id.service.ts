@@ -12,6 +12,11 @@ export class IdService {
     
     constructor(private http: HttpClient) {}
 
+    /**
+     * Creates a new user id with an associated selected word.
+     * 
+     * @returns the user id.
+     */
     createNewId(): Observable<string> {
         return this.http.put<string>('api/id', "", this.httpOptions);
     }

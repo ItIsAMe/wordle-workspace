@@ -8,12 +8,14 @@ import { Component, HostListener, QueryList, ViewChild, ViewChildren, OnInit } f
 import { WordService } from '../word.service';
 import Swal from 'sweetalert2';
 import{ CookieService } from 'ngx-cookie-service';
+
 @Component({
   selector: 'wordle-workspace-board',
   templateUrl:'./board.component.html',
   styleUrls: ['./board.component.scss']
 })
 export class BoardComponent implements OnInit{
+  
   currentInd = 0;
   inProgress = true;
   endMessage = "";
@@ -27,7 +29,11 @@ export class BoardComponent implements OnInit{
     this.loadCookieData();
   }
   
-  check() {
+  /**
+   * Checks and validates a word. Then outputs the resulting 
+   * comparision of the inputted word and the real word.
+   */
+  check(): void {
     if (typeof this.components ==='undefined') {
       return;
     }
@@ -65,7 +71,10 @@ export class BoardComponent implements OnInit{
     }
   }
 
-  newWord() {
+  /**
+   * Updates the current real word, to be a different word.
+   */
+  newWord(): void {
     if (typeof this.components ==='undefined') {
       return;
     }
@@ -86,6 +95,10 @@ export class BoardComponent implements OnInit{
     });
   }
 
+  /**
+   * Determines if the enter key was pressed and checks the word.
+   * @param event, Key press event
+   */
   @HostListener('document:keypress', ['$event'])
   potentiallyCheck(event: KeyboardEvent) {
     if (event.code ==="Enter" && this.inProgress) {
@@ -93,6 +106,9 @@ export class BoardComponent implements OnInit{
     }
   }
 
+  /**
+   * Creates a pop up to show an invalid word is entered.
+   */
   private invalidWordPopup() {
     Swal.fire({
       position: 'top',
@@ -103,16 +119,25 @@ export class BoardComponent implements OnInit{
     });
   }
 
+  /**
+   * Sets board state to done state.
+   */
   private setGameDoneState() {
     this.currentInd = 6;
     this.inProgress = false;
   }
 
+  /**
+   * Sets board state to start state.
+   */
   private setGameStartState() {
     this.currentInd = 0;
     this.inProgress = true;
   }
 
+  /**
+   * Saves board data to browser cookies.
+   */
   private loadCookieData() {
     if (!this.cookieService.check('id')){
       this.idService.createNewId().subscribe((id) => {
@@ -123,10 +148,16 @@ export class BoardComponent implements OnInit{
     this.userId = this.cookieService.get('id');
     this.currentInd = (this.cookieService.check('currentInd'))? +this.cookieService.get('currentInd'): 0;
     this.inProgress = (this.cookieService.check('inProgress'))? this.cookieService.get('inProgress')==="true": true;
+    this.endMessage = (this.cookieService.check('endMessage'))? this.cookieService.get('endMessage'): "";
+    console.log(this.endMessage);
   }
 
+  /**
+   * loads board data from browser cookies.
+   */
   private setCookieData() {
     this.cookieService.set('currentInd', this.currentInd.toString());
     this.cookieService.set('inProgress', this.inProgress.toString());
+    this.cookieService.set('endMessage', this.endMessage);
   }
 }

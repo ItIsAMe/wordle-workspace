@@ -9,6 +9,11 @@ export class IdService {
     constructor( @InjectRepository(SelectedWord)
     private selectedWordRepository: Repository<SelectedWord>) {}
     
+    /**
+     * Puts a new user id with a random real word.
+     * 
+     * @returns the user id.
+     */
     async createUserId(): Promise<string> {
         const randId = Math.floor(Math.random() * 5757);
         const selectedWordInput = await this.selectedWordRepository.save({
