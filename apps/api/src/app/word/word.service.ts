@@ -17,18 +17,29 @@ export class WordService {
         private selectedWordRepository: Repository<SelectedWord>,
     )   
     {}
-
+    
+    /**
+     * Checks the word agains the real word.
+     * 
+     * @param wordInputted, the word inputted.
+     * @param userId, the specific.
+     * @returns the correctness of each letter
+     */
     async checkWord(wordInputted: WordCheckDto, userId: string): Promise<WordResult> {
+
+        //Determine if the inputted word is found in the repo word
+        //to make sure it is an actual word.
         const wordFound = await Word.findOne({
             where: {
                 str:`${wordInputted.chars.join("")}`,
             }
         })
-
+        //Not a word return invalid word response.
         if (wordFound === null) {
             return new WordResult([Correctness.Correct], false);
         }
         
+        //Get the real word of the specific user from the SelectedWord repository.
         const realWord = await SelectedWord.findOne({
             where: {
                 userId: userId, 
@@ -40,6 +51,13 @@ export class WordService {
         return this.getResult(wordInputted.chars.join("").toLowerCase(), realWord.word.str);
     }
 
+    /**
+     * Algorithim that checks the correctness of an inputted word agains the real word
+     * 
+     * @param chars, the inputted word.
+     * @param realWord, the real word of the specific user.
+     * @returns the correctness of each letter in the inputted word.
+     */
     getResult(chars: string, realWord: string): WordResult {
         const mapLetters = new Map<string, number> ();
         for(let i = 0; i < realWord.length; i++) {
@@ -87,6 +105,10 @@ export class WordService {
         return new WordResult(correctnessArr, true);
     }
 
+    /**
+     * Updates the selected word of a specific user to a random new one.
+     * @param userId, user that specified the action. 
+     */
     async updateSelectedWord(userId: string) {
         const randId = Math.floor(Math.random() * 5757);
         await this.selectedWordRepository.save({

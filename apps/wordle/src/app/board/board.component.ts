@@ -8,6 +8,7 @@ import { Component, HostListener, QueryList, ViewChild, ViewChildren, OnInit } f
 import { WordService } from '../word.service';
 import Swal from 'sweetalert2';
 import{ CookieService } from 'ngx-cookie-service';
+import * as confetti from 'canvas-confetti';
 
 @Component({
   selector: 'wordle-workspace-board',
@@ -15,18 +16,24 @@ import{ CookieService } from 'ngx-cookie-service';
   styleUrls: ['./board.component.scss']
 })
 export class BoardComponent implements OnInit{
-  
+
   currentInd = 0;
   inProgress = true;
   endMessage = "";
   private userId = "";
   @ViewChildren('word') components?: QueryList<WordComponent>;
   @ViewChild('keyboard') keyboard?: KeyboardComponent;
+  @ViewChild('canvas') canvas: any;
+  myConfetti: any;
 
   constructor(private wordService: WordService, private winService: WinService, private cookieService: CookieService, private idService: IdService) {}
 
   ngOnInit() {
     this.loadCookieData();
+    this.myConfetti = confetti.create(this.canvas,{
+      resize: true
+    });
+    
   }
   
   /**
@@ -37,38 +44,38 @@ export class BoardComponent implements OnInit{
     if (typeof this.components ==='undefined') {
       return;
     }
-    else {
-      const component = this.components.toArray()[this.currentInd];
-      const wordGuess = component.chars;
-      if (!this.wordService.isValid(wordGuess)){
-        this.invalidWordPopup();
-        return;
-      }
-      
-      const wordCheckDto = new WordCheckDto(wordGuess);
-      this.wordService.checkWord(wordCheckDto).subscribe((result) => {
-        if (result.valid){
-          component.updateStyle(result.results);
-          if (this.keyboard)
-            this.keyboard.updateStyle(result.results, wordGuess);
-          
-          this.currentInd++;
-          const won = this.winService.checkWin(result);
-          if (won) {
-            this.endMessage = "You got the wordle";
-            this.setGameDoneState();
-          }
-          else if (this.currentInd > 5) {
-            this.endMessage = "Better luck next time";
-            this.setGameDoneState();
-          }
-          this.setCookieData();
-        }
-        else {
-          this.invalidWordPopup();
-        }
-      });
+    const component = this.components.toArray()[this.currentInd];
+    const wordGuess = component.chars;
+    if (!this.wordService.isValid(wordGuess)){
+      this.invalidWordPopup();
+      return;
     }
+      
+    const wordCheckDto = new WordCheckDto(wordGuess);
+    this.wordService.checkWord(wordCheckDto).subscribe((result) => {
+      if (result.valid){
+        component.updateStyle(result.results);
+        if (this.keyboard)
+          this.keyboard.updateStyle(result.results, wordGuess);
+          
+        this.currentInd++;
+        const won = this.winService.checkWin(result);
+        if (won) {
+          console.log(won);
+          this.confettiSuprise();
+          this.endMessage = "You got the wordle";
+          this.setGameDoneState();
+        }
+        else if (this.currentInd > 5) {
+          this.endMessage = "Better luck next time";
+          this.setGameDoneState();
+        }
+        this.setCookieData();
+      }
+      else {
+        this.invalidWordPopup();
+      }
+    });
   }
 
   /**
@@ -159,5 +166,9 @@ export class BoardComponent implements OnInit{
     this.cookieService.set('currentInd', this.currentInd.toString());
     this.cookieService.set('inProgress', this.inProgress.toString());
     this.cookieService.set('endMessage', this.endMessage);
+  }
+
+  private confettiSuprise(): void {
+    this.myConfetti();
   }
 }
