@@ -2,6 +2,9 @@
   "name": "wordle-workspace",
   "version": "0.0.0",
   "license": "MIT",
+  "engines": {
+    "node": "8.5.0"
+  },
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
@@ -22,6 +25,7 @@
     "@nestjs/common": "^8.0.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/serve-static": "^2.2.2",
     "@nestjs/typeorm": "^8.0.3",
     "@nrwl/angular": "14.1.4",
     "@types/express": "^4.17.13",
