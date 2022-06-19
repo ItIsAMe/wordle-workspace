@@ -58,7 +58,7 @@
     "@nrwl/linter": "14.1.4",
     "@nrwl/nest": "14.1.4",
     "@nrwl/node": "14.1.4",
-    "@nrwl/nx-cloud": "latest",
+    "@nrwl/nx-cloud": "^14.1.2",
     "@nrwl/workspace": "14.1.4",
     "@types/canvas-confetti": "^1.4.2",
     "@types/jest": "27.4.1",
