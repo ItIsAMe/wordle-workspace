@@ -10,8 +10,13 @@ import {ServeStaticModule} from "@nestjs/serve-static";
     IdModule,
     TypeOrmModule.forRoot({
       type: 'mysql',
+      //host: 'localhost',
       host:  process.env.HOST,
       port: 3306,
+     // username: 'root',
+     // password: 'pass',
+      //database:'wordle',
+      autoLoadEntities: true,
       username:  process.env.USERNAME,
       password: process.env.PASSWORD,
       database:'heroku_00a972e8693a723',
