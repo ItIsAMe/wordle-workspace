@@ -8,8 +8,8 @@
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && ngcc --properties es2015 browser module main",
-    "start": "nx serve",
-    "build": "nx build",
+    "start": "node dist/apps/api/main.js",
+    "build": "nx run-many --target=build --projects=wordle,api --parallel=true",
     "test": "nx test"
   },
   "private": true,
