@@ -15,12 +15,12 @@ export class WordService {
         private wordRepository: Repository<Word>,
         @InjectRepository(SelectedWord)
         private selectedWordRepository: Repository<SelectedWord>,
-    )   
+    )
     {}
-    
+
     /**
      * Checks the word agains the real word.
-     * 
+     *
      * @param wordInputted, the word inputted.
      * @param userId, the specific.
      * @returns the correctness of each letter
@@ -38,11 +38,11 @@ export class WordService {
         if (wordFound === null) {
             return new WordResult([Correctness.Correct], false);
         }
-        
+
         //Get the real word of the specific user from the SelectedWord repository.
         const realWord = await SelectedWord.findOne({
             where: {
-                userId: userId, 
+                userId: userId,
             },
             relations: ['word'],
         });
@@ -53,7 +53,7 @@ export class WordService {
 
     /**
      * Algorithim that checks the correctness of an inputted word agains the real word
-     * 
+     *
      * @param chars, the inputted word.
      * @param realWord, the real word of the specific user.
      * @returns the correctness of each letter in the inputted word.
@@ -79,7 +79,7 @@ export class WordService {
                 mapLetters.set(chars[j], freq-1);
             }
         }
-        
+
         for(let k = 0; k < chars.length; k ++) {
             if (correctnessArr[k] === Correctness.Correct) {
                 //index already done as correct, no op
@@ -107,7 +107,7 @@ export class WordService {
 
     /**
      * Updates the selected word of a specific user to a random new one.
-     * @param userId, user that specified the action. 
+     * @param userId, user that specified the action.
      */
     async updateSelectedWord(userId: string) {
         const randId = Math.floor(Math.random() * 5757);
@@ -115,5 +115,20 @@ export class WordService {
             userId: userId,
             wordId:randId,
         });
+    }
+
+  /**
+   * gets a users word they are guessing
+   * @param userId the specific user
+   * @Return string the user's word they are guessing
+   */
+  async getWord(userId: string): Promise<string> {
+      const realWord = await SelectedWord.findOne({
+        where: {
+          userId: userId,
+        },
+        relations: ['word'],
+      });
+      return JSON.stringify(realWord.word.str);
     }
 }
