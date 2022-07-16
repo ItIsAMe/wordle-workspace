@@ -17,8 +17,8 @@ export class WordService {
 
     /**
      * Check how correct each letter is, in the inputted word.
-     * 
-     * @param wordGuess, WordCheckDto with the guessed letters 
+     *
+     * @param wordGuess, WordCheckDto with the guessed letters
      * @returns the correctness of each letter
      */
     checkWord(wordGuess: WordCheckDto): Observable<WordResult> {
@@ -27,15 +27,15 @@ export class WordService {
 
     /**
      * Updates the user selected Word.
-     * @returns 
+     * @returns
      */
     newGame(): Observable<boolean>{
         return this.http.put<boolean>(`api/newgame/${this.cookieService.get('id')}`,'', this.httpOptions);
     }
-    
+
     /**
      * Determines if the inputted letters are all valid letters.
-     * 
+     *
      * @param chars, inputted letters.
      * @returns true if the letters are all valid letters, otherwise false.
      */
@@ -49,5 +49,14 @@ export class WordService {
             }
         }
         return true;
+    }
+
+  /**
+   * Gets users word.
+   *
+   * @returns users word being guessed
+   */
+  getWord(): Observable<string> {
+      return this.http.get<string>(`api/getWord/${this.cookieService.get('id')}`);
     }
 }

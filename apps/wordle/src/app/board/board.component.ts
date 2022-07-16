@@ -33,11 +33,11 @@ export class BoardComponent implements OnInit{
     this.myConfetti = confetti.create(this.canvas,{
       resize: true
     });
-    
+
   }
-  
+
   /**
-   * Checks and validates a word. Then outputs the resulting 
+   * Checks and validates a word. Then outputs the resulting
    * comparision of the inputted word and the real word.
    */
   check(): void {
@@ -50,14 +50,14 @@ export class BoardComponent implements OnInit{
       this.invalidWordPopup();
       return;
     }
-      
+
     const wordCheckDto = new WordCheckDto(wordGuess);
     this.wordService.checkWord(wordCheckDto).subscribe((result) => {
       if (result.valid){
         component.updateStyle(result.results);
         if (this.keyboard)
           this.keyboard.updateStyle(result.results, wordGuess);
-          
+
         this.currentInd++;
         const won = this.winService.checkWin(result);
         if (won) {
@@ -67,8 +67,10 @@ export class BoardComponent implements OnInit{
           this.setGameDoneState();
         }
         else if (this.currentInd > 5) {
-          this.endMessage = "Better luck next time";
-          this.setGameDoneState();
+          this.wordService.getWord().subscribe( word => {
+            this.endMessage = "The word was " + word+". Better luck next time";
+            this.setGameDoneState();
+          });
         }
         this.setCookieData();
       }
@@ -95,7 +97,7 @@ export class BoardComponent implements OnInit{
     if(this.keyboard) {
       this.keyboard.clear();
     }
-    
+
     this.wordService.newGame().subscribe(()=>{
       this.setGameStartState();
       this.setCookieData();
